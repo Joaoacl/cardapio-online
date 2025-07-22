@@ -826,6 +826,11 @@
                         </div>
                     </div>
                     
+
+                    <div id="resumo-total-pedido" class="mb-6 text-left text-lg font-semibold" style="color: var(--cor-texto) !important;">
+                        Total do pedido: <span id="valor-total-pedido">R$ 0,00</span>
+                    </div>
+                    
                     <div class="flex space-x-3">
                         <button onclick="prevStep(2)" class="flex-1 py-3 rounded-lg font-medium transition-colors" style="background-color: var(--cor-fundo-secundario) !important; color: var(--cor-texto) !important;" onmouseover="this.style.backgroundColor='var(--cor-borda)'" onmouseout="this.style.backgroundColor='var(--cor-fundo-secundario)'">
                             Voltar
@@ -886,6 +891,8 @@
             checkout: {},
             envio: {}
         };
+
+        const checkoutConfig = getCheckoutConfig();
 
         // Function to parse CSV data with proper handling of quoted fields
         function parseCSV(csvText) {
@@ -1792,6 +1799,9 @@
             notes: ''
         };
 
+        
+
+
         // Parse variations from classificacaoAdicional
         function parseVariations(classificacaoAdicional) {
             if (!classificacaoAdicional) return null;
@@ -2289,6 +2299,7 @@
                 const isModalOpen = !document.getElementById('product-modal').classList.contains('hidden') ||
                                    !document.getElementById('cart-modal').classList.contains('hidden') ||
                                    !document.getElementById('checkout-modal').classList.contains('hidden');
+                                   atualizarResumoTotal();
                 cartFab.style.display = isModalOpen ? 'none' : 'flex';
             } else {
                 cartFab.classList.add('hidden');
@@ -2486,6 +2497,8 @@
             
             // Update orderData with current selection
             orderData.deliveryType = deliveryType;
+
+            atualizarResumoTotal();
             
             let hasErrors = false;
             
@@ -2546,6 +2559,23 @@
             }
             
             return true;
+        }
+
+        
+
+        function atualizarResumoTotal() {
+            const checkoutConfig = getCheckoutConfig();
+            let total = cart.reduce((sum, item) => sum + (item.preco * item.quantity), 0);
+
+            if (orderData.deliveryType === 'delivery') {
+                const taxa = parseFloat(checkoutConfig.step2_taxa_delivery.replace('R$', '').replace(',', '.')) || 0;
+                total += taxa;
+            }
+
+            const totalSpan = document.getElementById('valor-total-pedido');
+            if (totalSpan) {
+                totalSpan.textContent = formatCurrency(total);
+            }
         }
         
         // Clear all field errors
@@ -3137,6 +3167,7 @@
             }
         }
         
+        
 
 
         // Simple validation functions - only called when needed
@@ -3597,6 +3628,7 @@
             'FJD': { symbol: 'FJ$', decimalSeparator: '.', thousandSeparator: ',', position: 'before' }
         };
 
+       
         // Get current currency from configuration
         function getCurrentCurrency() {
             const checkoutConfig = getCheckoutConfig();
@@ -3697,6 +3729,8 @@
         
         // Format order message
         function formatOrderMessage(restaurantName) {
+            const checkoutConfig = getCheckoutConfig();
+
             console.log('=== DEBUG FORMAT ORDER MESSAGE ===');
             console.log('restaurantName:', restaurantName);
             console.log('orderData:', orderData);
@@ -3753,8 +3787,17 @@
                 message += `  └ Qtd: ${item.quantity}x | Unitário: ${formatCurrency(item.preco)} | Subtotal: ${formatCurrency(itemSubtotal)}\n\n`;
             });
             
+
             // Total
-            const total = cart.reduce((sum, item) => sum + (item.preco * item.quantity), 0);
+            let total = cart.reduce((sum, item) => sum + (item.preco * item.quantity), 0);
+
+            let taxaEntrega = 0;
+            // Somar taxa de entrega se for delivery
+            if (orderData.deliveryType === 'delivery') {
+            taxaEntrega = parseFloat(checkoutConfig.step2_taxa_delivery.replace('R$', '').replace(',', '.')) || 0;
+            message += `🚚 *Taxa de entrega:* ${formatCurrency(taxaEntrega)}\n`;
+            total += taxaEntrega;
+            }
             message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
             message += `💰 *TOTAL: ${formatCurrency(total)}*\n`;
             message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;

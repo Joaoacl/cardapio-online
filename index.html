@@ -567,7 +567,17 @@
             <!-- Developer Credits -->
             <div class="border-t border-gray-700 pt-6 text-center">
                 <p class="text-sm" style="color: var(--cor-texto-secundario) !important;">
-                    Desenvolvido por <a href="https://www.dantetesta.com.br" target="_blank" class="font-medium transition-colors" style="color: var(--cor-terciaria) !important;" onmouseover="this.style.color='var(-cor_terciaria_escura)'" onmouseout="this.style.color='var(--cor-texto-secundario'">Dante Testa</a>
+                    Desenvolvido por 
+                    <a 
+                        href="https://wa.me/5517981717281?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20o%20card%C3%A1pio%20digital%20com%20planilhas.%20Pode%20me%20explicar%20como%20funciona%3F" 
+                        target="_blank" 
+                        class="font-medium transition-colors" 
+                        style="color: var(--cor-terciaria) !important;" 
+                        onmouseover="this.style.color='var(--cor-terciaria-escura)'" 
+                        onmouseout="this.style.color='var(--cor-texto-secundario)'"
+                    >
+                        Joao Ribeiro
+                    </a>
                 </p>
             </div>
         </div>
@@ -2002,7 +2012,7 @@
                                     <div class="flex items-center space-x-4">
                                         <div class="flex-shrink-0">
                                             <img src="${processImageUrl(item.imagem)}" alt="${item.nome}" class="w-20 h-20 object-cover rounded-lg lazy-image" loading="lazy" onerror="console.error('Erro ao carregar imagem do item:', this.src, 'Item:', '${item.nome}'); this.src='${getPlaceholderImage()}'" onload="this.classList.add('loaded'); console.log('Imagem do item carregada:', this.src)" style="background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite;">
-                                            <div class="text-xs text-gray-500 text-center mt-1 font-mono">${item.sku}</div>
+                                            
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <h3 class="font-semibold text-gray-900 truncate">${item.nome}</h3>
